@@ -1,4 +1,5 @@
 import axios, { HttpStatusCode } from "axios";
+import * as Config from "./ApiConfig";
 
 class Api {
   static async get(address) {
@@ -9,16 +10,22 @@ class Api {
       },
     };
     try {
-      const response = await axios.get(
-        "http://109.174.29.40:15009/" + address,
-        config
-      );
+      const response = await axios.get(Config.BASE_API_URL + address, config);
       return response;
     } catch (ex) {
-      if (ex.response.status === HttpStatusCode.Unauthorized) {
+      if (
+        ex.response != null &&
+        ex.response.status === HttpStatusCode.Unauthorized
+      ) {
+        let token = localStorage.getItem("access-token");
+        config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
         if (await this.TryRefreshToken(localStorage.getItem("refresh-token"))) {
           const response = await axios.get(
-            "http://109.174.29.40:15009/" + address,
+            Config.BASE_API_URL + address,
             config
           );
           return response;
@@ -38,16 +45,26 @@ class Api {
     };
     try {
       const response = await axios.post(
-        "http://109.174.29.40:15009/" + address,
+        Config.BASE_API_URL + address,
         data,
         config
       );
       return response;
     } catch (ex) {
-      if (ex.response.status === HttpStatusCode.Unauthorized) {
-        if (this.TryRefreshToken(localStorage.getItem("refresh-token"))) {
+      console.log(ex);
+      if (
+        ex.response != null &&
+        ex.response.status === HttpStatusCode.Unauthorized
+      ) {
+        if (await this.TryRefreshToken(localStorage.getItem("refresh-token"))) {
+          let token = localStorage.getItem("access-token");
+          config = {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
           const response = await axios.post(
-            "http://109.174.29.40:15009/" + address,
+            Config.BASE_API_URL + address,
             data,
             config
           );
@@ -68,16 +85,26 @@ class Api {
     };
     try {
       const response = await axios.put(
-        "http://109.174.29.40:15009/" + address,
+        Config.BASE_API_URL + address,
         data,
         config
       );
       return response;
     } catch (ex) {
-      if (ex.response.status === HttpStatusCode.Unauthorized) {
-        if (this.TryRefreshToken(localStorage.getItem("refresh-token"))) {
+      console.log(ex);
+      if (
+        ex.response != null &&
+        ex.response.status === HttpStatusCode.Unauthorized
+      ) {
+        if (await this.TryRefreshToken(localStorage.getItem("refresh-token"))) {
+          let token = localStorage.getItem("access-token");
+          config = {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
           const response = await axios.put(
-            "http://109.174.29.40:15009/" + address,
+            Config.BASE_API_URL + address,
             data,
             config
           );
@@ -102,12 +129,10 @@ class Api {
         null,
         config
       );
-      if (response.status == HttpStatusCode.Ok) {
-        localStorage.setItem("access-token", response.data.access);
-        localStorage.setItem("refresh-token", response.data.refresh);
-        return true;
-      }
-      return false;
+
+      localStorage.setItem("access-token", response.data.access);
+      localStorage.setItem("refresh-token", response.data.refresh);
+      return true;
     } catch (ex) {
       return false;
     }

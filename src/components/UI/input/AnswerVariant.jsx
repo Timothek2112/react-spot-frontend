@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Question from "./../../../models/Question";
 
 const AnswerVariant = ({
@@ -7,7 +7,22 @@ const AnswerVariant = ({
   question = new Question(),
   variant = {},
 }) => {
-  const [title, setTitle] = useState(question.title);
+  const [title, setTitle] = useState(variant.title);
+
+  useEffect(() => {
+    variant.title = title;
+    let copy = Object.assign([], Data);
+
+    copy.forEach((element, i) => {
+      element.answerVariants.forEach((answerVariant, index) => {
+        if (answerVariant.id == variant.id) {
+          element.answerVariants[index] = variant;
+        }
+      });
+    });
+
+    setData(copy);
+  }, [title]);
 
   function Remove() {
     const copy = Object.assign([], Data);

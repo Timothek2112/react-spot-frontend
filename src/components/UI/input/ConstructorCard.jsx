@@ -7,6 +7,20 @@ const ConstructorCard = ({ Data, setData, question = new Question() }) => {
   const [title, setTitle] = useState(question.title);
   const [isOpen, setOpen] = useState(question.isOpen);
 
+  useEffect(() => {
+    question.title = title;
+    question.isOpen = isOpen;
+    let copy = Object.assign([], Data);
+
+    copy.forEach((element, i) => {
+      if (element.id == question.id) {
+        copy[i] = question;
+      }
+    });
+
+    setData(copy);
+  }, [title, isOpen]);
+
   function Remove() {
     let copy = Object.assign([], Data);
 
@@ -22,14 +36,7 @@ const ConstructorCard = ({ Data, setData, question = new Question() }) => {
   function AddAnswerVariant() {
     let newVariant = null;
 
-    if (question.answerVariants.length > 0) {
-      newVariant = new AnswerVariantModel();
-      newVariant.id =
-        question.answerVariants[question.answerVariants.length - 1].id + 1;
-    } else {
-      newVariant = new AnswerVariantModel();
-    }
-
+    newVariant = new AnswerVariantModel();
     question.answerVariants.push(newVariant);
     let copy = Object.assign([], Data);
 

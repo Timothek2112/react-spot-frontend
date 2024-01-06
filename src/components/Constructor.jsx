@@ -9,6 +9,8 @@ import { Survey } from "../models/Survey";
 import { useLocation } from "react-router-dom";
 import SurveyService from "../services/SurveyService";
 import GroupService from "../services/GroupService";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Constructor = ({ survey = new Survey() }, ...props) => {
   const location = useLocation();
@@ -31,6 +33,25 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
   if (surveyState.userId == 0) {
     surveyState.userId = localStorage.getItem("userId");
   }
+
+  useEffect(() => {
+    if (surveyState === null) {
+      setSurveyState(survey);
+      return;
+    }
+    survey = surveyState;
+    console.log(surveyState);
+    setData(surveyState.questions);
+    setTitle(surveyState.title);
+    setDescription(surveyState.description);
+    setStartTime(surveyState.startTime);
+    setEndTime(surveyState.endTime);
+    setDepartment(surveyState.department);
+    setActive(surveyState.active);
+    setAccessCode(surveyState.accessCode);
+    setGroup(surveyState.group);
+  }, [surveyState]);
+
   useEffect(() => {
     const newGroup = groups.filter((element) => {
       if (group == null) return false;
@@ -51,17 +72,18 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
   }, []);
 
   useEffect(() => {
-    survey.title = title;
-    survey.department = department;
-    survey.description = description;
-    survey.startTime = startTime;
-    survey.endTime = endTime;
-    survey.active = active;
-    survey.accessCode = accessCode;
-    survey.questions = Data;
-    survey.group = group;
-    survey.groupId = groupId;
-    setSurveyState(survey);
+    surveyState.title = title;
+    surveyState.department = department;
+    surveyState.description = description;
+    surveyState.startTime = startTime;
+    surveyState.endTime = endTime;
+    surveyState.active = active;
+    surveyState.accessCode = accessCode;
+    surveyState.questions = Data;
+    surveyState.group = group;
+    surveyState.groupId = groupId;
+    setSurveyState(surveyState);
+    console.log(surveyState);
   }, [
     title,
     description,
@@ -78,11 +100,11 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
   function SaveSurvey() {
     if (surveyState.id == 0) {
       SurveyService.CreateSurvey(surveyState).then((result) => {
+        console.log(result);
         setSurveyState(result);
       });
     } else {
       SurveyService.SaveSurvey(surveyState).then((result) => {
-        console.log(result);
         setSurveyState(result);
       });
     }
@@ -90,13 +112,7 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
 
   function add() {
     let copy = Object.assign([], Data);
-    if (Data.length > 0) {
-      const question = new Question();
-      question.id = Data[Data.length - 1].id + 1;
-      copy.push(question);
-    } else {
-      copy.push(new Question());
-    }
+    copy.push(new Question());
     setData(copy);
   }
 
@@ -144,6 +160,7 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
           </button>
         </div>
       </div>
+      <ToastContainer />
     </BaseLogged>
   );
 };
