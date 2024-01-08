@@ -12,6 +12,7 @@ import Login from "./components/Login";
 import ControlPanel from "./components/ControlPanel";
 import Constructor from "./components/Constructor";
 import PrivateRoute from "./components/Routers/PrivateRoute";
+import ReportView from "./components/ReportView";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" element={<PrivateRoute />}>
             <Route exact path="/controlPanel" element={<ControlPanel />} />
             <Route exact path="/constructor" element={<Constructor />} />
+            <Route exact path="/report" element={<ReportView />} />
           </Route>
         </Routes>
       </Router>

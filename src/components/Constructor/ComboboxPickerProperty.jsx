@@ -3,7 +3,13 @@ import DatePicker from "react-datetime";
 import moment from "moment";
 import "react-datetime/css/react-datetime.css";
 
-const ComboboxPickerProperty = ({ title, property, setProperty, options }) => {
+const ComboboxPickerProperty = ({
+  title,
+  property,
+  setProperty,
+  options,
+  defaultTitle,
+}) => {
   return (
     <div className="space-x-4 grid grid-cols-12">
       <div className="col-span-2 flex items-center">
@@ -16,12 +22,12 @@ const ComboboxPickerProperty = ({ title, property, setProperty, options }) => {
           className="select select-bordered w-full"
         >
           <option disabled selected>
-            {title}
+            {defaultTitle}
           </option>
           {!!(options != null) &&
             options.map((element) => {
               if (element === null) return <></>;
-              return <option>{element.title}</option>;
+              return <option key={element.id}>{element.title}</option>;
             })}
         </select>
       </div>

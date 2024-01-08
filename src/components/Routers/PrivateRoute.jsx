@@ -5,24 +5,15 @@ import AuthService from "./../../services/AuthService";
 import Login from "../Login";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [isReady, setReady] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    AuthService.checkLogged()
-      .then((result) => {
-        setIsAuthenticated(result);
-      })
-      .finally(() => setReady(true));
+    AuthService.checkLogged().then((result) => {
+      setIsAuthenticated(result);
+    });
   }, []);
 
-  // if (!isReady) {
-  //   return (
-  //     <span className="absolute loading loading-bars loading-lg left-1/2 top-1/2"></span>
-  //   );
-  // }
-
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+  return isAuthenticated ? <Outlet /> : <Login />;
 };
 
 export default PrivateRoute;

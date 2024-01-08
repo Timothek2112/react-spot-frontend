@@ -8,12 +8,35 @@ const ConstructorCard = ({ Data, setData, question = new Question() }) => {
   const [isOpen, setOpen] = useState(question.isOpen);
 
   useEffect(() => {
+    autoTextArea();
+  }, []);
+
+  function autoTextArea() {
+    var tx = document.getElementsByTagName("textarea");
+    for (var i = 0; i < tx.length; i++) {
+      tx[i].setAttribute(
+        "style",
+        "height:" + tx[i].scrollHeight + "px;overflow-y:hidden;"
+      );
+
+      tx[i].addEventListener("input", OnInput, false);
+    }
+  }
+
+  function OnInput() {
+    this.style.height = "auto";
+    this.style.height = this.scrollHeight + "px";
+  }
+
+  useEffect(() => {
     question.title = title;
     question.isOpen = isOpen;
     let copy = Object.assign([], Data);
 
     copy.forEach((element, i) => {
-      if (element.id == question.id) {
+      if (element.innerId !== undefined) {
+        if (element.innerId == question.innerId) copy[i] = question;
+      } else if (element.id == question.id) {
         copy[i] = question;
       }
     });
@@ -25,7 +48,9 @@ const ConstructorCard = ({ Data, setData, question = new Question() }) => {
     let copy = Object.assign([], Data);
 
     copy.forEach((element, index) => {
-      if (element.id == question.id) {
+      if (element.innerId !== undefined) {
+        if (element.innerId == question.innerId) copy.splice(index, 1);
+      } else if (element.id == question.id) {
         copy.splice(index, 1);
       }
     });
@@ -41,7 +66,9 @@ const ConstructorCard = ({ Data, setData, question = new Question() }) => {
     let copy = Object.assign([], Data);
 
     copy.forEach((element, i) => {
-      if (element.id == question.id) {
+      if (element.innerId !== undefined) {
+        if (element.innerId == question.innerId) copy[i] = question;
+      } else if (element.id == question.id) {
         copy[i] = question;
       }
     });

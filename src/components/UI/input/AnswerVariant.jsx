@@ -15,7 +15,10 @@ const AnswerVariant = ({
 
     copy.forEach((element, i) => {
       element.answerVariants.forEach((answerVariant, index) => {
-        if (answerVariant.id == variant.id) {
+        if (answerVariant.innerId !== undefined) {
+          if (answerVariant.innerId == variant.innerId)
+            element.answerVariants[index] = variant;
+        } else if (answerVariant.id == variant.id) {
           element.answerVariants[index] = variant;
         }
       });
@@ -28,9 +31,15 @@ const AnswerVariant = ({
     const copy = Object.assign([], Data);
 
     copy.forEach((element, i) => {
-      if (question.id == element.id) {
+      if (
+        question.id == element.id ||
+        (question.innerId !== undefined && question.innerId == element.innerId)
+      ) {
         element.answerVariants.forEach((curVariant, index) => {
-          if (variant.id == curVariant.id) {
+          if (variant.innerId !== undefined) {
+            if (curVariant.innerId == variant.innerId)
+              element.answerVariants.splice(index, 1);
+          } else if (variant.id == curVariant.id) {
             element.answerVariants.splice(index, 1);
           }
         });
@@ -53,7 +62,8 @@ const AnswerVariant = ({
           <textarea
             type="text"
             placeholder="Текст варианта ответа"
-            className="input w-full border-1 border-accent mt-5"
+            className="input w-full border-1 border-accent mt-5 "
+            maxlength="24"
             onChange={(e) => {
               setTitle(e.target.value);
             }}

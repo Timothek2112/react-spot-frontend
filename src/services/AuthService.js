@@ -8,6 +8,7 @@ class AuthService {
     try {
       const response = await Api.get("users/" + localStorage.getItem("userId"));
       UserService.SaveUserInfoIntoLocalStorage(response.data);
+      console.log(response);
       return true;
     } catch {
       return false;

@@ -20,7 +20,7 @@ class SurveyService {
       const response = await Api.post("survey", survey);
       console.log("Returned value");
       console.log(response.data);
-      return response.data;
+      return Survey.Parse(response.data);
     } catch (ex) {
       console.log(ex);
       return null;
@@ -34,7 +34,7 @@ class SurveyService {
       const response = await Api.put(`survey/${survey.id}`, survey);
       console.log("Returned survey:");
       console.log(response.data);
-      return response.data;
+      return Survey.Parse(response.data);
     } catch (ex) {
       console.log(ex);
       return null;

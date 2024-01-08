@@ -9,6 +9,7 @@ class Api {
         Authorization: `Bearer ${token}`,
       },
     };
+
     try {
       const response = await axios.get(Config.BASE_API_URL + address, config);
       return response;
@@ -17,13 +18,14 @@ class Api {
         ex.response != null &&
         ex.response.status === HttpStatusCode.Unauthorized
       ) {
-        let token = localStorage.getItem("access-token");
-        config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
+        console.log("REFRESH");
         if (await this.TryRefreshToken(localStorage.getItem("refresh-token"))) {
+          let token = localStorage.getItem("access-token");
+          config = {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
           const response = await axios.get(
             Config.BASE_API_URL + address,
             config
@@ -31,6 +33,7 @@ class Api {
           return response;
         }
       } else {
+        console.log(ex);
         throw ex;
       }
     }
@@ -134,6 +137,7 @@ class Api {
       localStorage.setItem("refresh-token", response.data.refresh);
       return true;
     } catch (ex) {
+      console.log(ex);
       return false;
     }
   }

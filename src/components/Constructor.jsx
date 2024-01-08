@@ -6,16 +6,24 @@ import ConstructorCard from "./UI/input/ConstructorCard";
 import Question from "./../models/Question";
 import ConstructorRightPanel from "./Panels/ConstructorRightPanel";
 import { Survey } from "../models/Survey";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SurveyService from "../services/SurveyService";
 import GroupService from "../services/GroupService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Alert } from "@material-tailwind/react";
 
 const Constructor = ({ survey = new Survey() }, ...props) => {
+  const navigate = useNavigate();
   const location = useLocation();
   if (!(location.state === null))
     survey = location.state.survey === null ? survey : location.state.survey;
+  if (survey.accessCode == "") {
+    survey.accessCode = makeid(6);
+  }
+  survey = Survey.Parse(survey);
+  console.log(survey);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [surveyState, setSurveyState] = useState(survey);
   const [Data, setData] = useState(surveyState.questions);
   const [title, setTitle] = useState(surveyState.title);
@@ -33,24 +41,19 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
   if (surveyState.userId == 0) {
     surveyState.userId = localStorage.getItem("userId");
   }
+  const [endTimeNeeded, setEndTimeNeeded] = useState(surveyState.endTimeNeeded);
 
-  useEffect(() => {
-    if (surveyState === null) {
-      setSurveyState(survey);
-      return;
+  function makeid(length) {
+    let result = "";
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
     }
-    survey = surveyState;
-    console.log(surveyState);
-    setData(surveyState.questions);
-    setTitle(surveyState.title);
-    setDescription(surveyState.description);
-    setStartTime(surveyState.startTime);
-    setEndTime(surveyState.endTime);
-    setDepartment(surveyState.department);
-    setActive(surveyState.active);
-    setAccessCode(surveyState.accessCode);
-    setGroup(surveyState.group);
-  }, [surveyState]);
+    return result;
+  }
 
   useEffect(() => {
     const newGroup = groups.filter((element) => {
@@ -82,8 +85,12 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
     surveyState.questions = Data;
     surveyState.group = group;
     surveyState.groupId = groupId;
+    surveyState.endTimeNeeded = endTimeNeeded;
+    if (!surveyState.endTimeNeeded) {
+      surveyState.endTime = null;
+    }
+    setUnsavedChanges(true);
     setSurveyState(surveyState);
-    console.log(surveyState);
   }, [
     title,
     description,
@@ -95,19 +102,70 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
     Data,
     group,
     groupId,
+    endTimeNeeded,
   ]);
 
+  function ValidateSurvey(survey) {
+    let error = false;
+
+    if (survey.questions.length == 0) {
+      toast.warning("Нельзя сохранить опрос без вопросов!", {
+        position: toast.POSITION.BOTTOM_LEFT,
+      });
+      error = true;
+    }
+
+    if (survey.groupId == 0) {
+      toast.warning("Перед сохранением необходимо выбрать группу!", {
+        position: toast.POSITION.BOTTOM_LEFT,
+      });
+      error = true;
+    }
+
+    if (survey.title == "") {
+      toast.warning("Имя опроса не может быть пустым!", {
+        position: toast.POSITION.BOTTOM_LEFT,
+      });
+      error = true;
+    }
+
+    if (
+      (survey.startTime >= survey.endTime || survey.endTime === null) &&
+      survey.endTimeNeeded
+    ) {
+      toast.warning(
+        "Время начала опроса должно быть меньше времени окончания!",
+        {
+          position: toast.POSITION.BOTTOM_LEFT,
+        }
+      );
+      error = true;
+    }
+
+    return !error;
+  }
+
   function SaveSurvey() {
+    if (!ValidateSurvey(surveyState)) return;
     if (surveyState.id == 0) {
       SurveyService.CreateSurvey(surveyState).then((result) => {
-        console.log(result);
-        setSurveyState(result);
+        navigate("/constructor", {
+          replace: true,
+          state: { survey: result },
+        });
       });
     } else {
       SurveyService.SaveSurvey(surveyState).then((result) => {
-        setSurveyState(result);
+        navigate("/constructor", {
+          replace: true,
+          state: { survey: result },
+        });
       });
     }
+    toast.success("Опрос успешно сохранен!", {
+      position: toast.POSITION.BOTTOM_LEFT,
+    });
+    setUnsavedChanges(false);
   }
 
   function add() {
@@ -118,9 +176,12 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
 
   return (
     <BaseLogged>
-      <h5 className="text-primary text-4xl font-bold mt-10">
-        Редактирование опроса
-      </h5>
+      <div className="flex flex-row">
+        <h5 className="text-primary text-4xl font-bold m-10 ">
+          Редактирование опроса
+        </h5>
+        <button className="btn btn-primary">Primary</button>
+      </div>
       <div className="w-full">
         <ConstructorRightPanel
           title={title}
@@ -141,17 +202,24 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
           group={group}
           setGroup={setGroup}
           SaveSurvey={SaveSurvey}
+          endTimeNeeded={endTimeNeeded}
+          setEndTimeNeeded={setEndTimeNeeded}
+          survey={surveyState}
         ></ConstructorRightPanel>
         <div className="px-10 pb-10 space-y-2 w-full">
           {!!Data.length &&
-            Data.map((element) => (
-              <ConstructorCard
-                key={element.id}
-                Data={Data}
-                setData={setData}
-                question={element}
-              />
-            ))}
+            Data.map((element) => {
+              return (
+                <ConstructorCard
+                  key={
+                    element.innerId === undefined ? element.id : element.innerId
+                  }
+                  Data={Data}
+                  setData={setData}
+                  question={element}
+                />
+              );
+            })}
           <button
             onClick={add}
             className="btn btn-primary text-white w-30  mx-auto block"
