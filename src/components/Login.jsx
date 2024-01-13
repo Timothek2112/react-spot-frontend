@@ -18,34 +18,41 @@ const Login = (props) => {
   };
 
   if (logged) {
-    navigate("/");
+    navigate("/controlPanel");
   }
 
   return (
     <BaseUnlogged>
       <div className="w-full flex flex-col h-screen">
-        <div className="m-auto space-y-10 content-center w-1/3">
+        <div className="m-auto flex flex-col content-center items-center w-1/3">
+          <div className=" flex flex-row justify-center items-center">
+            <img src="./images/main-logo.jpg" className=" w-[20vh]" />
+            <span className="h-min grow text-[10vh] text-primary z-10 ml-[-30px]">
+              СПОТ
+            </span>
+          </div>
           <input
             onChange={(e) => setLogin(e.target.value)}
             type="text"
             placeholder="Имя пользователя"
-            className="block input input-bordered  bg-accent w-full"
+            className="block input input-bordered  bg-accent w-full mt-[100px]"
           />
+
           <input
             onChange={(e) => setPassword(e.target.value)}
-            type="text"
+            type="password"
             placeholder="Пароль"
-            className="block input input-bordered  bg-accent w-full"
+            className="block input input-bordered  bg-accent w-full mt-5"
           />
           <a
             href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-            className="link link-primary"
+            className="link link-primary w-full"
           >
             Забыли пароль?
           </a>
           <button
             onClick={LogIn}
-            className="block btn btn-primary w-44 m-auto text-white"
+            className="block btn btn-primary w-44 m-auto text-white mt-5"
           >
             Войти
           </button>

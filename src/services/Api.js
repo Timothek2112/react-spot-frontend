@@ -128,7 +128,7 @@ class Api {
     };
     try {
       const response = await axios.post(
-        "http://109.174.29.40:15009/users/refresh",
+        Config.BASE_API_URL + "users/refresh",
         null,
         config
       );

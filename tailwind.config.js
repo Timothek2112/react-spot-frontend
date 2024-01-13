@@ -10,13 +10,13 @@ module.exports = {
       {
         light: {
           ...require("daisyui/src/theming/themes")["light"],
-          primary: "#008ED4",
+          primary: "#126da2",
           accent: "#D9D9D9",
         },
         extend: {
           gridTemplateColumns: {
             // Простая сетка из 16 столбцов
-            minContent: "repeat(2, minmax(200px, 1fr))",
+            22: "repeat(2, minmax(200px, 1fr))",
           },
         },
       },

@@ -176,11 +176,18 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
 
   return (
     <BaseLogged>
-      <div className="flex flex-row">
+      <div className="flex flex-row items-center w-full">
         <h5 className="text-primary text-4xl font-bold m-10 ">
           Редактирование опроса
         </h5>
-        <button className="btn btn-primary">Primary</button>
+        <div className="grow">
+          <button
+            onClick={() => navigate(-1)}
+            className="btn btn-error float-right mr-10 text-white w-48"
+          >
+            Назад
+          </button>
+        </div>
       </div>
       <div className="w-full">
         <ConstructorRightPanel
