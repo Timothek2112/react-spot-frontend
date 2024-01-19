@@ -108,6 +108,35 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
   function ValidateSurvey(survey) {
     let error = false;
 
+    survey.questions.forEach((el) => {
+      if (el.title == "") {
+        toast.warning(
+          "Нельзя сохранить опрос, в котором есть вопросы с пустым текстом!",
+          {
+            position: toast.POSITION.BOTTOM_LEFT,
+          }
+        );
+        error = true;
+      }
+      if (el.answerVariants.length == 0) {
+        toast.warning("Нельзя сохранить вопрос без вариантов ответа!", {
+          position: toast.POSITION.BOTTOM_LEFT,
+        });
+        error = true;
+      }
+      el.answerVariants.forEach((element) => {
+        if (element.title == "") {
+          toast.warning(
+            "Нельзя сохранить опрос, в котором есть варианты ответа с пустым текстом!",
+            {
+              position: toast.POSITION.BOTTOM_LEFT,
+            }
+          );
+          error = true;
+        }
+      });
+    });
+
     if (survey.questions.length == 0) {
       toast.warning("Нельзя сохранить опрос без вопросов!", {
         position: toast.POSITION.BOTTOM_LEFT,
