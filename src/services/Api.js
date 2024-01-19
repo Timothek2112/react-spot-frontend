@@ -119,6 +119,44 @@ class Api {
     }
   }
 
+  static async Delete(address) {
+    let token = localStorage.getItem("access-token");
+    let config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    try {
+      const response = await axios.delete(
+        Config.BASE_API_URL + address,
+        config
+      );
+      return response;
+    } catch (ex) {
+      console.log(ex);
+      if (
+        ex.response != null &&
+        ex.response.status === HttpStatusCode.Unauthorized
+      ) {
+        if (await this.TryRefreshToken(localStorage.getItem("refresh-token"))) {
+          let token = localStorage.getItem("access-token");
+          config = {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+          const response = await axios.delete(
+            Config.BASE_API_URL + address,
+            config
+          );
+          return response;
+        }
+      } else {
+        throw ex;
+      }
+    }
+  }
+
   static async TryRefreshToken(refreshToken) {
     const token = localStorage.getItem("refresh-token");
     let config = {

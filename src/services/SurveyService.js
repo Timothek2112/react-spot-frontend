@@ -40,6 +40,29 @@ class SurveyService {
       return null;
     }
   }
+
+  static async DeleteSurvey(id) {
+    try {
+      const response = await Api.Delete("survey/" + id);
+    } catch (ex) {
+      console.log(ex);
+    }
+  }
+
+  static async SetSurveyActive(id, active) {
+    try {
+      console.log(id);
+      console.log(active);
+      const response = await Api.put(
+        `survey/active/` + id + "?active=" + active
+      );
+      console.log(response);
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }
 
 export default SurveyService;

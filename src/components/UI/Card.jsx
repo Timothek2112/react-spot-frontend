@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CardInfo from "./../../models/CardInfo";
 import { useNavigate } from "react-router-dom";
+import SurveyService from "../../services/SurveyService";
 
-const Card = ({ cardInfo = new CardInfo() }) => {
+const Card = ({ cardInfo = new CardInfo(), setSurveys, surveys }) => {
   const [active, setActive] = useState(cardInfo.active);
   const navigate = useNavigate();
 
@@ -29,6 +30,11 @@ const Card = ({ cardInfo = new CardInfo() }) => {
   const startTime = ParseTime(cardInfo.startTime);
   const endTime = ParseTime(cardInfo.endTime);
 
+  function setSurveyActive(active) {
+    SurveyService.SetSurveyActive(cardInfo.id, active);
+    setActive(active);
+  }
+
   return (
     <div className="card w-full bg-base-100 shadow-xl border border-accent">
       <div className="card-body">
@@ -41,7 +47,7 @@ const Card = ({ cardInfo = new CardInfo() }) => {
             <span className="align-middle">Активен:</span>{" "}
             <input
               type="checkbox"
-              onChange={(event) => setActive(!active)}
+              onClick={(event) => setSurveyActive(!active)}
               checked={active}
               className="toggle toggle-md toggle-info align-middle"
             />
@@ -86,10 +92,21 @@ const Card = ({ cardInfo = new CardInfo() }) => {
               <button
                 className="btn btn-active btn-primary text-white "
                 onClick={() => {
-                  navigate("/report", { state: { surveyInfo: cardInfo } });
+                  if (cardInfo.answers.length > 0)
+                    navigate("/report", { state: { surveyInfo: cardInfo } });
                 }}
               >
                 Создать отчет
+              </button>
+              <button
+                onClick={() => {
+                  surveys = surveys.filter((el) => el.id != cardInfo.id);
+                  setSurveys(surveys);
+                  SurveyService.DeleteSurvey(cardInfo.id);
+                }}
+                className="btn btn-error float-right mr-5 text-white w-48"
+              >
+                Удалить опрос
               </button>
             </tr>
           </tbody>

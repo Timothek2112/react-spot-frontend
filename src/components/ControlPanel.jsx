@@ -25,20 +25,23 @@ const ControlPanel = (props) => {
   const navigate = useNavigate();
 
   return (
-    <BaseLogged>
-      <SearchBar query={query} setQuery={setQuery}>
-        <div className="w-min">
-          <button
-            onClick={() => {
-              navigate("/constructor");
-            }}
-            className="btn btn-info w-full text-white"
-          >
-            Создать
-          </button>
-        </div>
-      </SearchBar>
-      <div className="w-full grid 2xl:grid-cols-2 xl:grid-cols-2 gap-4 p-4 my-10">
+    <BaseLogged
+      SearchBar={
+        <SearchBar query={query} setQuery={setQuery}>
+          <div className="w-min">
+            <button
+              onClick={() => {
+                navigate("/constructor");
+              }}
+              className="btn btn-info w-full text-white"
+            >
+              Создать
+            </button>
+          </div>
+        </SearchBar>
+      }
+    >
+      <div className="w-full grid 2xl:grid-cols-2 xl:grid-cols-2 gap-4 p-5">
         {!!surveys.length &&
           surveys
             .filter((card) => {
@@ -51,7 +54,14 @@ const ControlPanel = (props) => {
                 return card;
               }
             })
-            .map((card) => <Card key={card.id} cardInfo={card}></Card>)}
+            .map((card) => (
+              <Card
+                key={card.id}
+                cardInfo={card}
+                setSurveys={setSurveys}
+                surveys={surveys}
+              ></Card>
+            ))}
       </div>
     </BaseLogged>
   );

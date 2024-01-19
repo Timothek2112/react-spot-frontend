@@ -146,6 +146,11 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
   }
 
   function SaveSurvey() {
+    surveyState.questions.forEach((element, i) => {
+      if (element.isOpen) {
+        element.answerVariants = null;
+      }
+    });
     if (!ValidateSurvey(surveyState)) return;
     if (surveyState.id == 0) {
       SurveyService.CreateSurvey(surveyState).then((result) => {
@@ -174,22 +179,28 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
     setData(copy);
   }
 
+  function showTitle() {
+    if (surveyState.id == 0) {
+      return "Редактор опроса";
+    } else {
+      return "Редактор опроса";
+    }
+  }
+
   return (
     <BaseLogged>
       <div className="flex flex-row items-center w-full">
-        <h5 className="text-primary text-4xl font-bold m-10 ">
-          Редактирование опроса
-        </h5>
+        <h5 className="text-primary text-4xl font-bold m-5 ">{showTitle()}</h5>
         <div className="grow">
           <button
             onClick={() => navigate(-1)}
-            className="btn btn-error float-right mr-10 text-white w-48"
+            className="btn btn-error float-right mr-5 text-white w-48"
           >
             Назад
           </button>
         </div>
       </div>
-      <div className="w-full">
+      <div className="w-full p-5 space-y-5">
         <ConstructorRightPanel
           title={title}
           setTitle={setTitle}
@@ -213,7 +224,7 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
           setEndTimeNeeded={setEndTimeNeeded}
           survey={surveyState}
         ></ConstructorRightPanel>
-        <div className="px-10 pb-10 space-y-2 w-full">
+        <div className="space-y-2 w-full">
           {!!Data.length &&
             Data.map((element) => {
               return (

@@ -30,7 +30,7 @@ const InfoPanel = (props) => {
   const respondentsCount = uniqRespondents.length;
 
   return (
-    <div className="card shadow-xl border border-accent mr-10 mt-10 sticky right-0 top-10">
+    <div className="card shadow-xl border border-accent sticky right-0 top-10">
       <div className="card-body">
         <div>
           <b className="text-xl">{!!(survey != null) && survey.title}</b>
@@ -77,9 +77,9 @@ const InfoPanel = (props) => {
                   Excel
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a>PDF</a>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

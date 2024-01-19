@@ -44,14 +44,9 @@ const Login = (props) => {
             placeholder="Пароль"
             className="block input input-bordered  bg-accent w-full mt-5"
           />
-          <a
-            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-            className="link link-primary w-full"
-          >
-            Забыли пароль?
-          </a>
+
           <button
-            onClick={LogIn}
+            onClick={() => LogIn()}
             className="block btn btn-primary w-44 m-auto text-white mt-5"
           >
             Войти

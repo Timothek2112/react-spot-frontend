@@ -19,8 +19,7 @@ function App() {
     <>
       <Router>
         <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route exact path="/login" element={<Login />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/" element={<PrivateRoute />}>
             <Route exact path="/controlPanel" element={<ControlPanel />} />
             <Route exact path="/constructor" element={<Constructor />} />

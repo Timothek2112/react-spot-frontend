@@ -8,7 +8,7 @@ const TextInputProperty = ({ title, property, setProperty, ...props }) => {
       </div>
       <input
         type="text"
-        placeholder="Имя опроса"
+        placeholder={title}
         className="input input-bordered input-info col-span-10"
         value={property}
         onChange={(e) => setProperty(e.target.value)}

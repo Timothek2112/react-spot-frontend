@@ -16,29 +16,35 @@ export default class ReportService {
 
     survey.questions.forEach((element) => {
       sheetData.push([element.title]);
-      element.answerVariants.forEach((variant) => {
-        const timesSelected = survey.answers.filter(
-          (p) => p.answerVariantId == variant.id && p.questionId == element.id
-        ).length;
-        const persent =
-          Math.round(
-            (timesSelected /
-              survey.answers.filter((p) => p.questionId == element.id).length) *
-              100 *
-              100
-          ) / 100;
-        console.log(variant);
-        console.log(timesSelected);
-        console.log(
-          survey.answers.filter((p) => p.questionId == element.id).length
-        );
-        sheetData.push([
-          "",
-          variant.title,
-          timesSelected,
-          persent.toString() + "%",
-        ]);
-      });
+      if (!element.isOpen) {
+        element.answerVariants.forEach((variant) => {
+          const timesSelected = survey.answers.filter(
+            (p) => p.answerVariantId == variant.id && p.questionId == element.id
+          ).length;
+          const persent =
+            Math.round(
+              (timesSelected /
+                survey.answers.filter((p) => p.questionId == element.id)
+                  .length) *
+                100 *
+                100
+            ) / 100;
+          sheetData.push([
+            "",
+            variant.title,
+            timesSelected,
+            persent.toString() + "%",
+          ]);
+        });
+      } else {
+        survey.answers
+          .filter((answer) => {
+            return answer.questionId == element.id;
+          })
+          .map((el) => {
+            sheetData.push(["", el.openAnswer]);
+          });
+      }
     });
 
     const worksheet = xlsx.utils.aoa_to_sheet(sheetData);

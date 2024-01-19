@@ -5,10 +5,10 @@ import CardInfo from "../models/CardInfo";
 
 const SearchBar = ({ query, setQuery, children }) => {
   return (
-    <div className="navbar sticky bg-base-100 flex justify-center">
-      <div className="gap-2 items-center w-1/2">
+    <div className="navbar bg-transparent flex justify-center text-black">
+      <div className="gap-2 items-center w-full">
         {children}
-        <div className="form-control items-center w-full  ">
+        <div className="form-control items-center w-full">
           <input
             content={query}
             type="text"

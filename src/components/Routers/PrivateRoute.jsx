@@ -6,10 +6,15 @@ import Login from "../Login";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     AuthService.checkLogged().then((result) => {
       setIsAuthenticated(result);
+      if (result) {
+        navigate("/controlPanel");
+      } else {
+        navigate("/login");
+      }
     });
   }, []);
 

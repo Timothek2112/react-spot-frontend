@@ -30,6 +30,17 @@ class AuthService {
       return false;
     }
   }
+
+  static async LogOut() {
+    try {
+      localStorage.removeItem("access-token");
+      localStorage.removeItem("refresh-token");
+      const response = await Api.post("users/logout");
+      return true;
+    } catch {
+      return false;
+    }
+  }
 }
 
 export default AuthService;

@@ -45,7 +45,7 @@ const ConstructorRightPanel = (props) => {
   }
 
   return (
-    <div className="card space-y-4 shadow-xl m-10 border border-accent">
+    <div className="card space-y-4 shadow-xl border border-accent">
       <div className="card-body">
         <TextInputProperty
           title={"Имя опроса:"}
@@ -96,16 +96,6 @@ const ConstructorRightPanel = (props) => {
             className="btn btn-active btn-primary w-1/5 text-white"
           >
             Сохранить
-          </button>
-          <button
-            onClick={() =>
-              navigate("/report", {
-                state: { surveyInfo: props.survey },
-              })
-            }
-            className="btn btn-active btn-primary w-1/5 text-white"
-          >
-            Создать отчет
           </button>
         </div>
       </div>
