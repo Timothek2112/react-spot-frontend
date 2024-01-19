@@ -22,7 +22,6 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
     survey.accessCode = makeid(6);
   }
   survey = Survey.Parse(survey);
-  console.log(survey);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [surveyState, setSurveyState] = useState(survey);
   const [Data, setData] = useState(surveyState.questions);
@@ -118,23 +117,25 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
         );
         error = true;
       }
-      if (el.answerVariants.length == 0) {
-        toast.warning("Нельзя сохранить вопрос без вариантов ответа!", {
-          position: toast.POSITION.BOTTOM_LEFT,
-        });
-        error = true;
-      }
-      el.answerVariants.forEach((element) => {
-        if (element.title == "") {
-          toast.warning(
-            "Нельзя сохранить опрос, в котором есть варианты ответа с пустым текстом!",
-            {
-              position: toast.POSITION.BOTTOM_LEFT,
-            }
-          );
+      if (!el.isOpen) {
+        if (el.answerVariants.length == 0) {
+          toast.warning("Нельзя сохранить вопрос без вариантов ответа!", {
+            position: toast.POSITION.BOTTOM_LEFT,
+          });
           error = true;
         }
-      });
+        el.answerVariants.forEach((element) => {
+          if (element.title == "") {
+            toast.warning(
+              "Нельзя сохранить опрос, в котором есть варианты ответа с пустым текстом!",
+              {
+                position: toast.POSITION.BOTTOM_LEFT,
+              }
+            );
+            error = true;
+          }
+        });
+      }
     });
 
     if (survey.questions.length == 0) {
@@ -183,17 +184,19 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
     if (!ValidateSurvey(surveyState)) return;
     if (surveyState.id == 0) {
       SurveyService.CreateSurvey(surveyState).then((result) => {
-        navigate("/constructor", {
-          replace: true,
-          state: { survey: result },
-        });
+        // navigate("/constructor", {
+        //   replace: true,
+        //   state: { survey: result },
+        // });
+        setSurveyState(result);
       });
     } else {
       SurveyService.SaveSurvey(surveyState).then((result) => {
-        navigate("/constructor", {
-          replace: true,
-          state: { survey: result },
-        });
+        // navigate("/constructor", {
+        //   replace: true,
+        //   state: { survey: result },
+        // });
+        setSurveyState(result);
       });
     }
     toast.success("Опрос успешно сохранен!", {
