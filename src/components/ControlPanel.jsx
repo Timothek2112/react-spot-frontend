@@ -6,6 +6,7 @@ import SearchBar from "./SearchBar";
 import { Navigate, useNavigate } from "react-router-dom";
 import SurveyService from "../services/SurveyService";
 import { Survey } from "../models/Survey";
+import { ToastContainer, toast } from "react-toastify";
 
 const ControlPanel = (props) => {
   const [query, setQuery] = useState("");

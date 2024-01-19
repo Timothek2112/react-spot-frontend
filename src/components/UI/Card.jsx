@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CardInfo from "./../../models/CardInfo";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import SurveyService from "../../services/SurveyService";
 
 const Card = ({ cardInfo = new CardInfo(), setSurveys, surveys }) => {
@@ -26,7 +27,6 @@ const Card = ({ cardInfo = new CardInfo(), setSurveys, surveys }) => {
     }
     return new Date(time).toLocaleString("ru", time);
   }
-
   const startTime = ParseTime(cardInfo.startTime);
   const endTime = ParseTime(cardInfo.endTime);
 
@@ -34,7 +34,6 @@ const Card = ({ cardInfo = new CardInfo(), setSurveys, surveys }) => {
     SurveyService.SetSurveyActive(cardInfo.id, active);
     setActive(active);
   }
-
   return (
     <div className="card w-full bg-base-100 shadow-xl border border-accent">
       <div className="card-body">
