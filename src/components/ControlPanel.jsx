@@ -63,6 +63,7 @@ const ControlPanel = (props) => {
               ></Card>
             ))}
       </div>
+      <ToastContainer />
     </BaseLogged>
   );
 };

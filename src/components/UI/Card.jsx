@@ -94,6 +94,14 @@ const Card = ({ cardInfo = new CardInfo(), setSurveys, surveys }) => {
                 onClick={() => {
                   if (cardInfo.answers.length > 0)
                     navigate("/report", { state: { surveyInfo: cardInfo } });
+                  else {
+                    toast.warning(
+                      "Этот опрос еще не проходили, невозможно создать отчет!",
+                      {
+                        position: toast.POSITION.BOTTOM_LEFT,
+                      }
+                    );
+                  }
                 }}
               >
                 Создать отчет
