@@ -97,6 +97,11 @@ const ConstructorRightPanel = (props) => {
           >
             Сохранить
           </button>
+          <button
+            onClick={props.getTemplate}
+            className="btn btn-active btn-primary w-1/5 text-white">
+            Скачать шаблон
+          </button>
         </div>
       </div>
     </div>

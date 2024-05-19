@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import BaseLogged from "./Panels/BaseLogged";
 import Card from "./UI/Card";
 import CardInfo from "../models/CardInfo";
@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Alert } from "@material-tailwind/react";
 
 const Constructor = ({ survey = new Survey() }, ...props) => {
+  const firstUpdate = useRef(true);
   const navigate = useNavigate();
   const location = useLocation();
   if (!(location.state === null))
@@ -74,6 +75,10 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
   }, []);
 
   useEffect(() => {
+    if(firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
     surveyState.title = title;
     surveyState.department = department;
     surveyState.description = description;
@@ -219,6 +224,18 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
     }
   }
 
+  function getTemplate(){
+    if(unsavedChanges) return;
+    if(!ValidateSurvey(surveyState)) return;
+
+    const surveyJSON = JSON.stringify(surveyState);
+    const link = document.createElement("a");
+    const file = new Blob([surveyJSON], { type: 'text/plain' });
+    link.href = URL.createObjectURL(file);
+    link.download = "sample.txt";
+    link.click();
+  }
+
   return (
     <BaseLogged>
       <div className="flex flex-row items-center w-full">
@@ -255,6 +272,7 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
           endTimeNeeded={endTimeNeeded}
           setEndTimeNeeded={setEndTimeNeeded}
           survey={surveyState}
+          getTemplate={getTemplate}
         ></ConstructorRightPanel>
         <div className="space-y-2 w-full">
           {!!Data.length &&

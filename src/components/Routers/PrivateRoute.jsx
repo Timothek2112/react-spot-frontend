@@ -10,15 +10,14 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   useEffect(() => {
     AuthService.checkLogged().then((result) => {
       setIsAuthenticated(result);
-      if (result) {
-       
-      } else {
+      if (!result) {
         navigate("/login");
       }
     });
   }, []);
 
-  return isAuthenticated ? <Outlet /> : <></>;
+  if(isAuthenticated)
+    return <Outlet />;
 };
 
 export default PrivateRoute;

@@ -25,20 +25,30 @@ const ControlPanel = (props) => {
 
   const navigate = useNavigate();
 
+  function loadFromFile(){
+
+  }
+
   return (
     <BaseLogged
       SearchBar={
         <SearchBar query={query} setQuery={setQuery}>
-          <div className="w-min">
+          
             <button
               onClick={() => {
                 navigate("/constructor");
               }}
-              className="btn btn-info w-full text-white"
+              className="btn btn-info text-white"
             >
               Создать
             </button>
-          </div>
+            <button
+              onClick={loadFromFile}
+              className="btn btn-info text-white"
+            >
+              Загрузить из шаблона
+              </button>
+          
         </SearchBar>
       }
     >

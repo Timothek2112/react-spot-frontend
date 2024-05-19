@@ -20,7 +20,7 @@ const BaseLogged = (props) => {
           onClick={() => navigate("/controlPanel")}
         ></img>
         <div className="w-full flex flex-row justify-center">
-          <div className="w-[40vw]">{props.SearchBar}</div>
+          {props.SearchBar}
         </div>
         <div className="grow text-left">
           <div className="text-xl h-min content-end ml-auto mr-10">
