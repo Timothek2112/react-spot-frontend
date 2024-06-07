@@ -11,12 +11,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     AuthService.checkLogged().then((result) => {
       setIsAuthenticated(result);
       if (!result) {
-        navigate("/login");
+        //navigate("/login");
       }
     });
   }, []);
 
-  if(isAuthenticated)
+  //if(isAuthenticated)
     return <Outlet />;
 };
 

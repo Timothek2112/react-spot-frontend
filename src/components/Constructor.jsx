@@ -20,7 +20,7 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
   if (!(location.state === null))
     survey = location.state.survey === null ? survey : location.state.survey;
   if (survey.accessCode == "") {
-    survey.accessCode = makeid(6);
+    survey.accessCode = survey.makeid(6);
   }
   survey = Survey.Parse(survey);
   const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -34,7 +34,7 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
   const [active, setActive] = useState(surveyState.active);
   const [accessCode, setAccessCode] = useState(surveyState.accessCode);
   const [group, setGroup] = useState(
-    surveyState.group == null ? null : surveyState.group.title
+    surveyState.group == null ? null : surveyState.group
   );
   const [groups, setGroups] = useState([]);
   const [groupId, setGroupId] = useState(surveyState.groupId);
@@ -42,27 +42,6 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
     surveyState.userId = localStorage.getItem("userId");
   }
   const [endTimeNeeded, setEndTimeNeeded] = useState(surveyState.endTimeNeeded);
-
-  function makeid(length) {
-    let result = "";
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
-  }
-
-  useEffect(() => {
-    const newGroup = groups.filter((element) => {
-      if (group == null) return false;
-      if (element.title == group) return true;
-      return false;
-    })[0];
-    if (newGroup != null) setGroupId(newGroup.id);
-  }, [group]);
 
   useEffect(() => {
     GroupService.GetAllGroups()
@@ -75,10 +54,26 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
   }, []);
 
   useEffect(() => {
-    if(firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
+    if(groups.length == 0) return;
+    const newGroup = groups.filter((element) => {
+      if (group == null) return false;
+      if (element.title == group) return true;
+      return false;
+    })[0];
+    if (newGroup != null){
+      setGroupId(newGroup.id);
+      surveyState.group.title = newGroup.title;
+      surveyState.group.id = newGroup.id;
+    } else{
+      surveyState.group.title = "";
+      surveyState.group.id = 0;
     }
+  }, [group]);
+
+  
+
+  useEffect(() => {
+    
     surveyState.title = title;
     surveyState.department = department;
     surveyState.description = description;
@@ -87,13 +82,14 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
     surveyState.active = active;
     surveyState.accessCode = accessCode;
     surveyState.questions = Data;
-    surveyState.group = group;
+    surveyState.group.title = group.title;
+    surveyState.group.id = groupId;
     surveyState.groupId = groupId;
     surveyState.endTimeNeeded = endTimeNeeded;
     if (!surveyState.endTimeNeeded) {
       surveyState.endTime = null;
     }
-    setUnsavedChanges(true);
+
     setSurveyState(surveyState);
   }, [
     title,
@@ -108,6 +104,31 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
     groupId,
     endTimeNeeded,
   ]);
+
+  useEffect(() => {
+    if(firstUpdate.current) {
+      firstUpdate.current = false;
+    }else{
+      setUnsavedChanges(true);
+    }
+  }, [surveyState]);
+
+  const handleUnsavedEvent = (e, condition) => {
+    if (condition) {
+      e.preventDefault();
+      e.returnValue = true;
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", (e) =>
+      handleUnsavedEvent(e, unsavedChanges)
+    );
+    return () =>
+      window.removeEventListener("beforeunload", (e) =>
+        handleUnsavedEvent(e, unsavedChanges)
+      );
+  }, [unsavedChanges]);
 
   function ValidateSurvey(survey) {
     let error = false;

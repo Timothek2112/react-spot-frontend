@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import BaseLogged from "./Panels/BaseLogged";
 import Card from "./UI/Card";
 import CardInfo from "../models/CardInfo";
@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 const ControlPanel = (props) => {
   const [query, setQuery] = useState("");
   const [surveys, setSurveys] = useState([]);
+  const inputFile = useRef();
 
   useEffect(() => {
     SurveyService.getAllSurveys().then((result) => {
@@ -26,7 +27,21 @@ const ControlPanel = (props) => {
   const navigate = useNavigate();
 
   function loadFromFile(){
+    inputFile.current.click();
+  }
 
+  function parseFile(event){
+    event.stopPropagation();
+    event.preventDefault();
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+      const text = (e.target.result);
+      const survey = Survey.Parse(JSON.parse(text));
+      survey.id = 0;
+      survey.makeid(6);
+      navigate("/constructor", { state: { survey: survey }});
+    };
+    reader.readAsText(event.target.files[0])
   }
 
   return (
@@ -52,6 +67,7 @@ const ControlPanel = (props) => {
         </SearchBar>
       }
     >
+      <input type='file' id='file' ref={inputFile} style={{display: 'none'}} onChange={(e) => parseFile(e)}/>
       <div className="w-full grid 2xl:grid-cols-2 xl:grid-cols-2 gap-4 p-5">
         {!!surveys.length &&
           surveys

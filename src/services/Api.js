@@ -4,12 +4,18 @@ import * as Config from "./ApiConfig";
 class Api {
   static async get(address) {
     let token = localStorage.getItem("access-token");
+    
     let config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
 
+    let userId = localStorage.getItem("userId");
+    if(userId != undefined && userId != null){
+      config.headers["UserId"] = userId;
+    }
+    
     try {
       const response = await axios.get(Config.BASE_API_URL + address, config);
       return response;
@@ -46,6 +52,12 @@ class Api {
         Authorization: `Bearer ${token}`,
       },
     };
+
+    let userId = localStorage.getItem("userId");
+    if(userId != undefined && userId != null){
+      config.headers["UserId"] = userId;
+    }
+
     try {
       const response = await axios.post(
         Config.BASE_API_URL + address,
@@ -86,6 +98,12 @@ class Api {
         Authorization: `Bearer ${token}`,
       },
     };
+
+    let userId = localStorage.getItem("userId");
+    if(userId != undefined && userId != null){
+      config.headers["UserId"] = userId;
+    }
+
     try {
       const response = await axios.put(
         Config.BASE_API_URL + address,
@@ -126,6 +144,12 @@ class Api {
         Authorization: `Bearer ${token}`,
       },
     };
+
+    let userId = localStorage.getItem("userId");
+    if(userId != undefined && userId != null){
+      config.headers["UserId"] = userId;
+    }
+
     try {
       const response = await axios.delete(
         Config.BASE_API_URL + address,

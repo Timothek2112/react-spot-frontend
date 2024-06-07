@@ -33,9 +33,9 @@ class AuthService {
 
   static async LogOut() {
     try {
+      const response = await Api.post("users/logout");
       localStorage.removeItem("access-token");
       localStorage.removeItem("refresh-token");
-      const response = await Api.post("users/logout");
       return true;
     } catch {
       return false;

@@ -27,6 +27,19 @@ export class Survey {
     return parsed;
   }
 
+  makeid(length) {
+    let result = "";
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    this.accessCode = result;
+    return result;
+  }
+
   id = 0;
   title = "";
   description = "";
@@ -35,6 +48,7 @@ export class Survey {
   endTime = new Date();
   active = false;
   groupId = 0;
+  group = {id: 0, title: ""}
   department = "";
   userId = 0;
   user = new User();

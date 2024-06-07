@@ -18,7 +18,7 @@ const ComboboxPickerProperty = ({
       <div className="h-full flex items-center col-span-10">
         <select
           onChange={(e) => setProperty(e.target.value)}
-          value={property}
+          value={property.title == "" ? null : property.title}
           className="select select-bordered w-full"
         >
           <option disabled selected>

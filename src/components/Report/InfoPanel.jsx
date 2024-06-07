@@ -76,6 +76,9 @@ const InfoPanel = (props) => {
                 <a onClick={() => ReportService.CreateExcelReport(survey)}>
                   Excel
                 </a>
+                <a onClick={() => ReportService.CreatePDFReport(survey)}>
+                  PDF
+                </a>
               </li>
               {/* <li>
                 <a>PDF</a>

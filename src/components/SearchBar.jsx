@@ -14,7 +14,7 @@ const SearchBar = ({ query, setQuery, children }) => {
               content={query}
               type="text"
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Найти опрос"
+              placeholder="Поиск"
               className="input input-bordered w-[30vw]"
             />
           </div>
