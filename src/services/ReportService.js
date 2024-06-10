@@ -1,11 +1,11 @@
 import * as xlsx from "xlsx/xlsx.mjs";
 import * as xls from "exceljs";
 import { saveAs } from 'file-saver';
-
+//const { PDFNet } = require('@pdftron/pdfnet-node');
 export default class ReportService {
   static CreateExcelReport(survey) {
     const wb = new xls.Workbook();
- 
+    
     let columns = [];
     
     const ws = wb.addWorksheet('1');
@@ -48,7 +48,7 @@ export default class ReportService {
     })
 
     ws.addRow();
-
+    
     for(let y = 1; y <= ws.columnCount; y++)
       {
         let value = 0;
@@ -71,7 +71,8 @@ export default class ReportService {
       const blob = new Blob([data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
-
+      // const buf = await (PDFNet?.Convert.office2PDF(data));
+      // const doc = await (PDFNet?.PDFDoc.createFromBuffer(buf));
       const url = window.URL.createObjectURL(blob);
       const anchor = document.createElement("a");
       anchor.href = url;

@@ -27,7 +27,13 @@ const UsersManager = (props) => {
     }>
     <div className="p-5">
         { 
-            users.map((user) => {
+            users.filter(user => {
+              if(query == ""){
+                return user;
+              }else if (user.name.toLowerCase().includes(query.toLowerCase())){
+                return user
+              }
+            }).map((user) => {
                 return <UserCard cardInfo={user} setUsers={setUsers} users={users}></UserCard>
             })
         }

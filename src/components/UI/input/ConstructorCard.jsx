@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Question from "./../../../models/Question";
 import { AnswerVariant as AnswerVariantModel } from "./../../../models/AnswerVariant";
 import AnswerVariant from "./AnswerVariant";
+import { v4 as uuidv4 } from "uuid";
 
 const ConstructorCard = ({ Data, setData, question = new Question() }) => {
   const [title, setTitle] = useState(question.title);
@@ -58,6 +59,18 @@ const ConstructorCard = ({ Data, setData, question = new Question() }) => {
     setData(copy);
   }
 
+  function Copy(){
+    var copy = Object.assign([], Data);
+    var newQuestion = Object.assign({}, question);
+    newQuestion.id = 0;
+    newQuestion.answerVariants.map((el) => {
+      el.id = 0;
+      el.innerId = uuidv4();
+    })
+    copy.push(newQuestion);
+    setData(copy);
+  }
+
   function AddAnswerVariant() {
     let newVariant = null;
 
@@ -96,6 +109,9 @@ const ConstructorCard = ({ Data, setData, question = new Question() }) => {
           Редактирование вопроса
           <button onClick={Remove} className="float-right">
             <i className="fa-solid fa-xmark fa-2xl"></i>
+          </button>
+          <button onClick={Copy} className="float-right mr-4 w-min">
+            Копировать
           </button>
         </div>
 

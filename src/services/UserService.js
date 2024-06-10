@@ -32,13 +32,8 @@ class UserService {
   }
 
   static async CreateUser(user){
-    try{
       const response = await Api.post("users/register", user);
       return response.data;
-    }
-    catch {
-      return new User();
-    }
   }
 
   static async SaveUser(user){

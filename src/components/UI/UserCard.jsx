@@ -10,7 +10,7 @@ const UserCard = ({ cardInfo = new User(), setUsers, users}) => {
   const navigate = useNavigate();
 
   return (
-    <div className="card w-full bg-base-100 shadow-xl border border-accent">
+    <div className="card w-full bg-base-100 shadow-xl border border-accent mb-2">
       <div className="card-body">
         <div className="flex flex-row">
           <div className="inline-block w-1/2">

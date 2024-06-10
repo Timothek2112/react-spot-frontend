@@ -23,6 +23,7 @@ const UserEditor = ({ user = new User() }, ...props) => {
   if (!(location.state === null))
     user = location.state.user === null ? user : location.state.user;
 
+  const [id, setId] = useState(user.id);
   const [name, setName] = useState(user.name);
   const [surname, setSurname] = useState(user.surname);
   const [patronomyc, setPatronomyc] = useState(user.patronomyc); 
@@ -45,6 +46,7 @@ const UserEditor = ({ user = new User() }, ...props) => {
   }, [roleTitle])
 
   useEffect(() => {
+    user.id = id;
     user.name = name;
     user.surname = surname;
     user.patronomyc = patronomyc;
@@ -52,7 +54,7 @@ const UserEditor = ({ user = new User() }, ...props) => {
     user.roleId = role.id;
     user.login = login;
     user.password = password;
-  }, [name, surname, patronomyc, role, login, password])
+  }, [id, name, surname, patronomyc, role, login, password])
 
   useEffect(() => {
     UserService.GetAllRoles().then((result) => {
@@ -68,7 +70,8 @@ const UserEditor = ({ user = new User() }, ...props) => {
   const SaveUser = () => {
     if(user.id == 0){
       UserService.CreateUser(user).then((result) => {
-        user.id = result.id;
+        setId(result.id);
+        navigate("/userConstructor", { state: { user: result } })
         toast("Успешно создан пользователь");
       }).catch((reason) => {
         toast("Не удалось создать пользователя");
@@ -102,6 +105,7 @@ const UserEditor = ({ user = new User() }, ...props) => {
       <TextInputProperty title="Отчество" property={patronomyc} setProperty={setPatronomyc}></TextInputProperty>
       <ComboboxPickerProperty title="Роль" property={role} setProperty={setRoleTitle} options={roleList} defaultTitle="Выбор роли"></ComboboxPickerProperty>
       <TextInputProperty title="Логин" property={login} setProperty={setLogin}></TextInputProperty>
+      { !!user.id == 0 && <TextInputProperty title="Пароль" property={password} setProperty={setPassword}></TextInputProperty>}
       </div>
       <div className="flex justify-center">
       <button

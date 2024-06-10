@@ -23,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<PrivateRoute />}>
+            <Route index element={<Navigate to="/controlPanel" replace />} />
             <Route exact path="/controlPanel" element={<ControlPanel />} />
             <Route exact path="/constructor" element={<Constructor />} />
             <Route exact path="/report" element={<ReportView />} />
