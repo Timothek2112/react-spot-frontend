@@ -16,7 +16,7 @@ import User from "../models/User";
 import TextInputProperty from "./Constructor/TextInputProperty";
 import ComboboxPickerProperty from "./Constructor/ComboboxPickerProperty";
 import UserService from "../services/UserService";
- 
+
 const UserEditor = ({ user = new User() }, ...props) => {
 
   const location = useLocation();
@@ -92,7 +92,7 @@ const UserEditor = ({ user = new User() }, ...props) => {
         <h5 className="text-primary text-4xl font-bold m-5 ">{showTitle()}</h5>
         <div className="grow">
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/usersManager")}
             className="btn btn-error float-right mr-5 text-white w-48"
           >
             Назад
@@ -104,7 +104,8 @@ const UserEditor = ({ user = new User() }, ...props) => {
       <TextInputProperty title="Имя" property={name} setProperty={setName}></TextInputProperty>
       <TextInputProperty title="Отчество" property={patronomyc} setProperty={setPatronomyc}></TextInputProperty>
       <ComboboxPickerProperty title="Роль" property={role} setProperty={setRoleTitle} options={roleList} defaultTitle="Выбор роли"></ComboboxPickerProperty>
-      <TextInputProperty title="Логин" property={login} setProperty={setLogin}></TextInputProperty>
+      
+      { !!user.id == 0 && <TextInputProperty title="Логин" property={login} setProperty={setLogin}></TextInputProperty>}
       { !!user.id == 0 && <TextInputProperty title="Пароль" property={password} setProperty={setPassword}></TextInputProperty>}
       </div>
       <div className="flex justify-center">

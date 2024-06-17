@@ -29,6 +29,30 @@ const InfoPanel = (props) => {
     });
   const respondentsCount = uniqRespondents.length;
 
+  async function CreateExcelReport(){
+    let wb = await ReportService.CreateExcelReport(survey);
+    wb.xlsx.writeBuffer().then(async function (data) {
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      
+      const url = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = survey.title + " - Отчет.xlsx";
+      anchor.click();
+      window.URL.revokeObjectURL(url);
+    });
+  }
+
+  async function CreatePDFReport(){
+    let reporturl = await ReportService.CreatePDFReport(survey);
+    var tempLink = document.createElement('a');
+    tempLink.href = reporturl;
+    tempLink.setAttribute('download', survey.title + " - Отчет.pdf");
+    tempLink.click();
+  }
+
   return (
     <div className="card shadow-xl border border-accent sticky right-0 top-10">
       <div className="card-body">
@@ -73,10 +97,10 @@ const InfoPanel = (props) => {
               className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max"
             >
               <li>
-                <a onClick={() => ReportService.CreateExcelReport(survey)}>
+                <a onClick={() => CreateExcelReport()}>
                   Excel
                 </a>
-                <a onClick={() => ReportService.CreatePDFReport(survey)}>
+                <a onClick={() => CreatePDFReport()}>
                   PDF
                 </a>
               </li>

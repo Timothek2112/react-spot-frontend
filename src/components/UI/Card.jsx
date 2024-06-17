@@ -107,9 +107,11 @@ const Card = ({ cardInfo = new CardInfo(), setSurveys, surveys }) => {
               </button>
               <button
                 onClick={() => {
-                  surveys = surveys.filter((el) => el.id != cardInfo.id);
-                  setSurveys(surveys);
-                  SurveyService.DeleteSurvey(cardInfo.id);
+                  if(window.confirm("Вы уверены, что хотите удалить опрос? Вместе с ним будут удалены все связанные данные, такие как ответы.")){
+                    surveys = surveys.filter((el) => el.id != cardInfo.id);
+                    setSurveys(surveys);
+                    SurveyService.DeleteSurvey(cardInfo.id);
+                  }
                 }}
                 className="btn btn-error float-right mr-5 text-white w-48"
               >

@@ -31,17 +31,36 @@ const ControlPanel = (props) => {
   }
 
   function parseFile(event){
+    try{
     event.stopPropagation();
     event.preventDefault();
     const reader = new FileReader()
     reader.onload = async (e) => {
+      try{
       const text = (e.target.result);
       const survey = Survey.Parse(JSON.parse(text));
       survey.id = 0;
       survey.makeid(6);
       navigate("/constructor", { state: { survey: survey }});
+      }catch{
+        toast.warning(
+          "Ошибка - файл не является шаблоном!",
+          {
+            position: toast.POSITION.BOTTOM_LEFT,
+          }
+        );
+       }
     };
     reader.readAsText(event.target.files[0])
+   }
+   catch{
+    toast.warning(
+      "Ошибка - файл не является шаблоном!",
+      {
+        position: toast.POSITION.BOTTOM_LEFT,
+      }
+    );
+   }
   }
 
   return (

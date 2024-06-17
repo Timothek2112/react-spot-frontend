@@ -63,6 +63,7 @@ const ConstructorCard = ({ Data, setData, question = new Question() }) => {
     var copy = Object.assign([], Data);
     var newQuestion = Object.assign({}, question);
     newQuestion.id = 0;
+    newQuestion.innerId = uuidv4();
     newQuestion.answerVariants.map((el) => {
       el.id = 0;
       el.innerId = uuidv4();

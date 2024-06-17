@@ -253,7 +253,7 @@ const Constructor = ({ survey = new Survey() }, ...props) => {
     const link = document.createElement("a");
     const file = new Blob([surveyJSON], { type: 'text/plain' });
     link.href = URL.createObjectURL(file);
-    link.download = "sample.txt";
+    link.download = surveyState.title + " - Шаблон.template";
     link.click();
   }
 

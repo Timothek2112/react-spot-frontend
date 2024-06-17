@@ -4,10 +4,24 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SurveyService from "../../services/SurveyService";
 import User from "./../../models/User";
+import UserService from "../../services/UserService";
 
 const UserCard = ({ cardInfo = new User(), setUsers, users}) => {
   const [active, setActive] = useState(cardInfo.active);
   const navigate = useNavigate();
+
+  function Delete() {
+    let copy = Object.assign([], users);
+    UserService.DeleteUser(cardInfo.id);
+
+    copy.forEach((element, index) => {
+      if (element.id == cardInfo.id) {
+        copy.splice(index, 1);
+      }
+    });
+
+    setUsers(copy);
+  }
 
   return (
     <div className="card w-full bg-base-100 shadow-xl border border-accent mb-2">
@@ -29,7 +43,11 @@ const UserCard = ({ cardInfo = new User(), setUsers, users}) => {
                 Редактировать
               </button>
               <button
-                
+                onClick={() => {
+                  if(window.confirm("Вы уверены, что хотите удалить пользователя? Вместе с ним будут удалены все связанные данные.")){
+                    Delete();
+                  }
+                }}
                 className="btn btn-error float-right mr-5 text-white w-48"
               >
                 Удалить пользователя

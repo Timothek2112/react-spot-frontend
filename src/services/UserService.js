@@ -40,6 +40,11 @@ class UserService {
       const response = await Api.put("users/" + user.id, user);
       return response.data;
   }
+
+  static async DeleteUser(userId) {
+    const response = await Api.Delete("users/" + userId);
+    return response.data;
+  }
 }
 
 export default UserService;

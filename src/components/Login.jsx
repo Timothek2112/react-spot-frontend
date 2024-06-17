@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import BaseUnlogged from "./Panels/BaseUnlogged";
 import { useNavigate } from "react-router-dom";
 import AuthService from "./../services/AuthService";
+import * as xls from "exceljs";
+import ConvertApi from 'convertapi-js'
+import ReportService from "../services/ReportService";
 
 const Login = (props) => {
   const [login, setLogin] = useState("");
@@ -19,6 +22,42 @@ const Login = (props) => {
 
   if (logged) {
     navigate("/controlPanel");
+  }
+
+  function TestPDF(){
+    const wb = new xls.Workbook();
+    wb.addWorksheet("1");
+    wb.xlsx.writeBuffer().then(async function (data) {
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      let dataPdf = await ReportService.CreatePDFReport(new File([blob], "abcd.xlsx"));
+      const blobPdf = new Blob([dataPdf.Files[0].FileData], {type: "application/pdf"});
+      var csvURL = window.URL.createObjectURL(blobPdf);
+      var tempLink = document.createElement('a');
+      tempLink.href = csvURL;
+      tempLink.setAttribute('download', 'filename.pdf');
+      tempLink.click();
+      // var reader = new FileReader();
+      // reader.readAsDataURL(blob);
+      // reader.onloadend = async function() {
+      //   var base64data = reader.result;
+      //   console.log(base64data);
+        
+      //   // let convertApi = new ConvertApi('M5ldQiry10iKD7x4');
+      //   // let params = convertApi.createParams();
+      //   // params.add('File', base64data);
+      //   // let result = await convertApi.convert('xlsx', 'pdf', params)
+      //   // window.open(result.URL, "_blank", "noopener");
+      // }
+      // const url = window.URL.createObjectURL(blob);
+      // const anchor = document.createElement("a");
+      // anchor.href = url;
+      // anchor.download = survey.title + " - Отчет.pdf";
+      // anchor.click();
+      // window.URL.revokeObjectURL(url);
+    });
   }
 
   return (
@@ -50,6 +89,12 @@ const Login = (props) => {
             className="block btn btn-primary w-44 m-auto text-white mt-5"
           >
             Войти
+          </button>
+          <button
+            onClick={() => TestPDF()}
+            className="block btn btn-primary w-44 m-auto text-white mt-5"
+          >
+            Тест пдф
           </button>
         </div>
       </div>

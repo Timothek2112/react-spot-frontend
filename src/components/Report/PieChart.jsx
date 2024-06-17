@@ -15,8 +15,8 @@ const PieChart = ({ question, survey, ...props }) => {
     datasets: [
       {
         data: Data.map((el) => el.count),
-        backgroundColor: ["#2FDE00", "#00A6B4", "#ff6600"],
-        hoverBackgroundColor: ["#175000", "#003350", "#993d00"],
+        backgroundColor: ["#f00", "#fa0", "#ffeb33", "#00a2ff", "#03ff68"],
+        hoverBackgroundColor: ["#f00", "#fa0", "#ffeb33", "#00a2ff", "#03ff68"],
       },
     ],
   };
