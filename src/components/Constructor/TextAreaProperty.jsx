@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-const TextAreaProperty = ({ title, property, setProperty }) => {
+const TextAreaProperty = ({ title, property, setProperty, required = false }) => {
   return (
     <div className="space-x-4 grid h-max grid-cols-12">
       <div className="flex items-center col-span-2">
-        <span className="text-black">{title}</span>
+        <span className="text-black">{title}{!!required && <span className="text-red-500">*</span>}</span>
       </div>
       <textarea
         type="text"

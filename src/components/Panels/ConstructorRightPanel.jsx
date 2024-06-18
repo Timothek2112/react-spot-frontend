@@ -51,6 +51,7 @@ const ConstructorRightPanel = (props) => {
           title={"Имя опроса:"}
           property={props.title}
           setProperty={props.setTitle}
+          required={true}
         ></TextInputProperty>
         <TextAreaProperty
           title="Описание опроса:"
@@ -63,6 +64,7 @@ const ConstructorRightPanel = (props) => {
           setProperty={props.setGroup}
           options={props.groups}
           defaultTitle="Выбор группы"
+          required={true}
         ></ComboboxPickerProperty>
         <TextInputProperty
           title={"Отделение:"}

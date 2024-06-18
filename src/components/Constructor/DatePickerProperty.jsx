@@ -3,11 +3,11 @@ import DatePicker from "react-datetime";
 import moment from "moment";
 import "react-datetime/css/react-datetime.css";
 
-const DatePickerProperty = ({ title, property, setProperty }) => {
+const DatePickerProperty = ({ title, property, setProperty, required = false }) => {
   return (
     <div className="space-x-4 grid grid-cols-12">
       <div className="col-span-2 flex items-center">
-        <span className="text-black items-center">{title}</span>
+        <span className="text-black items-center">{title}{!!required && <span className="text-red-500">*</span>}</span>
       </div>
       <div className="h-full flex items-center">
         <DatePicker

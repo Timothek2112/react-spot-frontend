@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-const TextInputProperty = ({ title, property, setProperty, ...props }) => {
+const TextInputProperty = ({ title, property, setProperty, required = false, ...props }) => {
   return (
     <div className="space-x-4 grid grid-cols-12">
       <div className="flex items-center col-span-2">
-        <span className="text-black">{title}</span>
+        <span className="text-black">{title}{!!required && <span className="text-red-500">*</span>}</span>
       </div>
       <input
         type="text"

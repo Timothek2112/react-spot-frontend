@@ -13,9 +13,9 @@ export default class ReportService {
     
     let columns = [];
     
-    const ws = wb.addWorksheet('1');
+    let ws = wb.addWorksheet('1');
     columns = [
-      {header: "Группа", key: "group", width: 5, style: {alignment: {wrapText: true}, border: {
+      {header: "Группа", key: "group", width: 10, style: {alignment: {wrapText: true}, border: {
         top: {style:'thin'},
         left: {style:'thin'},
         bottom: {style:'thin'},
@@ -24,7 +24,7 @@ export default class ReportService {
     ];
 
     survey.questions.forEach((element) => {
-      columns.push({header: element.title, key: element.title, width: 5, style: {alignment: {wrapText: true}, border: {
+      columns.push({header: element.title, key: element.title, width: 10, style: {alignment: {wrapText: true}, border: {
         top: {style:'thin'},
         left: {style:'thin'},
         bottom: {style:'thin'},
@@ -98,17 +98,122 @@ export default class ReportService {
         }
     }    
     
+    // Вторая страница
+    ws = wb.addWorksheet("2");
+    columns = [{header: "Измерение", key: "discipline", width: 10},
+                   {header: "Среднее", key: "result", width: 10}
+    ];
+
+    const results = [];
+
+    survey.answers.forEach((answer) => {
+      const question = survey.questions.find(q => q.id == answer.questionId);
+      const answerVariant = question.answerVariants.find(v => v.id == answer.answerVariantId);
+      
+      if(answerVariant == undefined) return;
+
+      let onlyNumbers = true;
+      question.answerVariants.forEach((av) => {
+        if(isNaN(parseInt(av.title))){
+          onlyNumbers = false;
+        }
+      })
+      if(!onlyNumbers) return;
+      const split = question.title.split(" - ");
+      if(split.lenght == 0) return;
+      var result = results.find(r => r.discipline == split[0]);
+      if(result == undefined){
+        results.push({discipline: split[0], count: 1, sum: parseInt(answerVariant.title)})
+        result = results[results.length - 1];
+      }
+      else{
+        result.count += 1;
+        result.sum += parseInt(answerVariant.title);
+      }
+    })
+
+    ws.columns = columns;
+
+    results.forEach((r) => {
+      const data = {discipline: r.discipline, result: (r.sum / r.count)};
+      ws.addRow(data);
+    })
+    
     return wb;
   }
 
   static async CreatePDFReport(survey){
-    let wb = await ReportService.CreateExcelReport(survey);
+
+    let wb = new xls.Workbook();
+    let ws = wb.addWorksheet("1");
+    let columns = [{header: "Измерение", key: "discipline", width: 10, style: {border: {bottom: {style:'thin'}}}},
+                   {header: "Среднее", key: "result", width: 10, style: {border: {bottom: {style:'thin'}}}}
+    ];
+
+    const results = [];
+
+    survey.answers.forEach((answer) => {
+      const question = survey.questions.find(q => q.id == answer.questionId);
+      const answerVariant = question.answerVariants.find(v => v.id == answer.answerVariantId);
+      
+      if(answerVariant == undefined) return;
+
+      let onlyNumbers = true;
+      question.answerVariants.forEach((av) => {
+        if(isNaN(parseInt(av.title))){
+          onlyNumbers = false;
+        }
+      })
+      if(!onlyNumbers) return;
+      const split = question.title.split(" - ");
+      if(split.lenght == 0) return;
+      var result = results.find(r => r.discipline == split[0]);
+      if(result == undefined){
+        results.push({discipline: split[0], count: 1, sum: parseInt(answerVariant.title)})
+        result = results[results.length - 1];
+      }
+      else{
+        result.count += 1;
+        result.sum += parseInt(answerVariant.title);
+      }
+    })
+
+    ws.columns = columns;
+
+    results.forEach((r) => {
+      const data = {discipline: r.discipline, result: (r.sum / r.count).toFixed(3)};
+      ws.addRow(data);
+    })
+
+    // let ws1 = wb.addWorksheet("2");
+    // ws.columns = [{header: "Вопрос", key: "question", width: 30, style: {border: {bottom: {style:'thin'}}}},
+    //               {header: "Ответы", key: "answers", width: 10, style: {border: {bottom: {style:'thin'}}}}
+    // ];
+
+    // survey.answers.forEach((a) => {
+    //   let question = survey.questions.find()
+    // })
+
+    // wb.xlsx.writeBuffer().then(async function (data) {
+    //   const blob = new Blob([data], {
+    //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    //   });
+      
+    //   const url = window.URL.createObjectURL(blob);
+    //   const anchor = document.createElement("a");
+    //   anchor.href = url;
+    //   anchor.download = survey.title + " - Отчет.xlsx";
+    //   anchor.click();
+    //   window.URL.revokeObjectURL(url);
+    // });
+    
+    // let wb = await ReportService.CreateExcelReport(survey);
     wb.xlsx.writeBuffer().then(async function (data) {
       const blob = new Blob([data], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
-      let dataPdf = await ReportService.ConvertToPDF(new File([blob], "abcd.xlsx"));
+      let dataPdf = await ReportService.ConvertXLSXToPDF(new File([blob], "abcd.xlsx"), "110", "portrait");
       var tempLink = document.createElement('a');
       tempLink.href = "data:application/pdf;base64," + dataPdf.Files[0].FileData;
       tempLink.setAttribute('download', survey.title + " - Отчет.pdf");
@@ -117,7 +222,7 @@ export default class ReportService {
     });
   }
 
-  static async ConvertToPDF(base64file){
+  static async ConvertXLSXToPDF(base64file, Scale = "50", orientation = "landscape"){
     let config = {
       headers: {
         Accept: "application/json",
@@ -133,11 +238,11 @@ export default class ReportService {
     data.append("ConvertMetadata", "true");
     data.append("ThousandsSeparator", ",");
     data.append("DecimalSeparator", ".");
-    data.append("PageOrientation", "landscape");
+    data.append("PageOrientation", orientation);
     data.append("PageSize", "default");
     data.append("AutoFit", "true");
     data.append("ClearPrintArea", "false");
-    data.append("Scale", "50");
+    data.append("Scale", Scale);
     data.append("CompressPDF", "false");
     data.append("Pdfa", "false");
     try{
